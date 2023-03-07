@@ -40,7 +40,8 @@ int main(int argc, char** argv) { //length iter
 	double error = 1;
 
 	double** arr = make_array(length, 10, 20, 20, 30);
-							
+	
+	#pragma kernels	
 	for (size_t i = 1; i < length-1; i++)
 	{
 		for (size_t j = 1; j < length-1; j++)
@@ -59,9 +60,10 @@ int main(int argc, char** argv) { //length iter
 		}
 
 		#pragma acc data present(arr, anew, error)
-		#pragma acc parallel loop independent collapse(2)
+		#pragma acc parallel loop independent collapse(2) reduction(max:error)
 		for (size_t i = 1; i < length - 1; i++)
 		{
+			//#pragma acc loop reduction(max:error)
 			for (size_t j = 1; j < length - 1; j++)
 			{
 				anew[i][j] = (arr[i + 1][j] + arr[i - 1][j] + arr[i][j - 1] + arr[i][j + 1]) / 4;
