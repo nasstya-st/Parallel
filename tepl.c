@@ -60,7 +60,7 @@ int main(int argc, char** argv) { //length iter
 		}
 
 		#pragma acc data present(arr, anew, error)
-		#pragma acc parallel loop independent collapse(2) reduction(max:error)
+		#pragma acc parallel loop independent collapse(2) reduction(max:error) async(3)
 		for (size_t i = 1; i < length - 1; i++)
 		{
 			//#pragma acc loop reduction(max:error)
@@ -70,7 +70,7 @@ int main(int argc, char** argv) { //length iter
 				error = fmax(error, fabs(anew[i][j] - arr[i][j]));
 			}
 		} 
-
+		#pragma acc wait(3)
 		if (g % 100 == 0) {
 			#pragma acc update host(error)
 		}
